@@ -21,16 +21,33 @@ class User(UserMixin, db.Model):
         return f'<User {self.username}>'
 
 
-class Doctor(db.Model):
+class Doctor(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
     specialty = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     price = db.Column(db.Integer, nullable=False)  # Price in rupees
     experience = db.Column(db.Integer, nullable=True)  # Experience in years
     qualification = db.Column(db.String(200), nullable=True)
     availability = db.Column(db.String(200), nullable=True)  # e.g. "Mon-Fri, 9 AM - 5 PM"
+    phone = db.Column(db.String(20), nullable=True)
+    address = db.Column(db.Text, nullable=True)
+    license_number = db.Column(db.String(50), unique=True, nullable=True)
+    is_verified = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     appointments = db.relationship('Appointment', backref='doctor', lazy=True)
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+        
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
+    def get_id(self):
+        return f"doctor_{self.id}"
     
     def __repr__(self):
         return f'<Doctor {self.name}, {self.specialty}>'

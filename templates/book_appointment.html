@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-calendar-plus"></i> Book Appointment with Dr. {{ doctor.name }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-user-md fa-4x text-primary mb-3"></i>
+                                <h5>Dr. {{ doctor.name }}</h5>
+                                <p class="text-muted">{{ doctor.specialty }}</p>
+                                {% if doctor.description %}
+                                <p><small>{{ doctor.description }}</small></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <form method="POST">
+                                {{ form.hidden_tag() }}
+                                
+                                <div class="mb-3">
+                                    {{ form.date.label(class="form-label") }}
+                                    {{ form.date(class="form-control") }}
+                                    {% if form.date.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.date.errors %}
+                                                <small>{{ error }}</small><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    {{ form.time.label(class="form-label") }}
+                                    {{ form.time(class="form-control") }}
+                                    {% if form.time.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.time.errors %}
+                                                <small>{{ error }}</small><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    {{ form.symptoms.label(class="form-label") }}
+                                    {{ form.symptoms(class="form-control", rows="4") }}
+                                    {% if form.symptoms.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.symptoms.errors %}
+                                                <small>{{ error }}</small><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="d-grid gap-2 d-md-flex">
+                                    {{ form.submit(class="btn btn-primary") }}
+                                    <a href="{{ url_for('doctors') }}" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

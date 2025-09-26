@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3><i class="fas fa-calendar-week"></i> Weekly Schedule</h3>
+                        <a href="{{ url_for('doctor_dashboard') }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% set days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                        {% for i in range(7) %}
+                        {% set current_date = today + timedelta(days=i) %}
+                        {% set date_str = current_date.strftime('%Y-%m-%d') %}
+                        
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card {% if current_date == today %}border-primary{% endif %}">
+                                <div class="card-header {% if current_date == today %}bg-primary text-white{% else %}bg-light{% endif %}">
+                                    <h6 class="mb-0">
+                                        {{ current_date.strftime('%A') }}
+                                        <br>
+                                        <small>{{ current_date.strftime('%B %d') }}</small>
+                                    </h6>
+                                </div>
+                                <div class="card-body p-2">
+                                    {% if date_str in schedule %}
+                                    {% for appointment in schedule[date_str] %}
+                                    <div class="alert alert-sm py-2 mb-2 
+                                         {% if appointment.status == 'Confirmed' %}alert-success
+                                         {% elif appointment.status == 'Pending' %}alert-warning
+                                         {% else %}alert-secondary{% endif %}">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>{{ appointment.time }}</strong><br>
+                                                <small>{{ appointment.patient.username }}</small>
+                                            </div>
+                                            <a href="{{ url_for('doctor_appointment_detail', appointment_id=appointment.id) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                    <p class="text-muted text-center py-2">
+                                        <i class="fas fa-calendar-times"></i><br>
+                                        <small>No appointments</small>
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('doctor_appointments') }}" class="btn btn-primary">
+                                <i class="fas fa-calendar-alt"></i> View All Appointments
+                            </a>
+                            <a href="{{ url_for('doctor_dashboard') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.alert-sm {
+    padding: 0.375rem 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3><i class="fas fa-user"></i> My Profile</h3>
+                        <div>
+                            <a href="{{ url_for('doctor_edit_profile') }}" class="btn btn-light btn-sm">
+                                <i class="fas fa-edit"></i> Edit Profile
+                            </a>
+                            <a href="{{ url_for('doctor_dashboard') }}" class="btn btn-outline-light btn-sm">
+                                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center mb-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-user-md fa-5x text-success"></i>
+                                </div>
+                                <h4>Dr. {{ doctor.name }}</h4>
+                                <p class="text-muted">{{ doctor.specialty }}</p>
+                                {% if doctor.is_verified %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                                {% else %}
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-clock"></i> Pending Verification
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-muted">Contact Information</h6>
+                                    <p><strong>Email:</strong> {{ doctor.email }}</p>
+                                    <p><strong>Phone:</strong> {{ doctor.phone or 'Not provided' }}</p>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-muted">Professional Details</h6>
+                                    <p><strong>Experience:</strong> {{ doctor.experience or 'Not specified' }} years</p>
+                                    <p><strong>License Number:</strong> {{ doctor.license_number or 'Not provided' }}</p>
+                                </div>
+                                
+                                <div class="col-12 mb-3">
+                                    <h6 class="text-muted">Qualifications</h6>
+                                    <p>{{ doctor.qualification or 'Not provided' }}</p>
+                                </div>
+                                
+                                <div class="col-12 mb-3">
+                                    <h6 class="text-muted">Practice Information</h6>
+                                    <p><strong>Consultation Fee:</strong> ₹{{ doctor.price }}</p>
+                                    <p><strong>Availability:</strong> {{ doctor.availability or 'Not specified' }}</p>
+                                </div>
+                                
+                                <div class="col-12 mb-3">
+                                    <h6 class="text-muted">Address</h6>
+                                    <p>{{ doctor.address or 'Not provided' }}</p>
+                                </div>
+                                
+                                {% if doctor.description %}
+                                <div class="col-12 mb-3">
+                                    <h6 class="text-muted">Professional Summary</h6>
+                                    <p>{{ doctor.description }}</p>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="col-12">
+                                    <h6 class="text-muted">Account Information</h6>
+                                    <p><strong>Member Since:</strong> {{ doctor.created_at.strftime('%B %Y') }}</p>
+                                    <p><strong>Status:</strong> 
+                                        {% if doctor.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
