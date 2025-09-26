@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3><i class="fas fa-info-circle"></i> Appointment Details</h3>
+                        <div>
+                            <a href="{{ url_for('doctor_appointments') }}" class="btn btn-light btn-sm">
+                                <i class="fas fa-arrow-left"></i> Back to Appointments
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-user"></i> Patient Information</h5>
+                            <div class="card bg-light mb-4">
+                                <div class="card-body">
+                                    <p><strong>Name:</strong> {{ appointment.patient.username }}</p>
+                                    <p><strong>Email:</strong> {{ appointment.patient.email }}</p>
+                                    <p><strong>Appointment ID:</strong> #{{ appointment.id }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-calendar-alt"></i> Appointment Details</h5>
+                            <div class="card bg-light mb-4">
+                                <div class="card-body">
+                                    <p><strong>Date:</strong> {{ appointment.date.strftime('%B %d, %Y') }}</p>
+                                    <p><strong>Time:</strong> {{ appointment.time }}</p>
+                                    <p><strong>Status:</strong> 
+                                        <span class="badge bg-{{ 'warning' if appointment.status == 'Pending' else 'success' if appointment.status == 'Confirmed' else 'info' if appointment.status == 'Completed' else 'secondary' }}">
+                                            {{ appointment.status }}
+                                        </span>
+                                    </p>
+                                    <p><strong>Created:</strong> {{ appointment.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <h5><i class="fas fa-notes-medical"></i> Patient's Symptoms/Concerns</h5>
+                            <div class="card bg-light mb-4">
+                                <div class="card-body">
+                                    <p>{{ appointment.symptoms if appointment.symptoms else 'No symptoms provided' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if hasattr(appointment, 'notes') and appointment.notes %}
+                    <div class="row">
+                        <div class="col-12">
+                            <h5><i class="fas fa-clipboard"></i> Doctor's Notes</h5>
+                            <div class="card bg-light mb-4">
+                                <div class="card-body">
+                                    <p>{{ appointment.notes }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('doctor_update_appointment', appointment_id=appointment.id) }}" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i> Update Status
+                                </a>
+                                
+                                {% if appointment.status == 'Pending' %}
+                                <form method="POST" action="{{ url_for('doctor_update_appointment', appointment_id=appointment.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="status" value="Confirmed">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-check"></i> Confirm Appointment
+                                    </button>
+                                </form>
+                                {% endif %}
+                                
+                                {% if appointment.status in ['Pending', 'Confirmed'] %}
+                                <form method="POST" action="{{ url_for('doctor_update_appointment', appointment_id=appointment.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="status" value="Completed">
+                                    <button type="submit" class="btn btn-info">
+                                        <i class="fas fa-check-circle"></i> Mark Complete
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
