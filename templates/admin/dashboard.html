@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-users fa-2x mb-2"></i>
+                                    <h4>{{ user_count }}</h4>
+                                    <p>Total Users</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-md fa-2x mb-2"></i>
+                                    <h4>{{ doctor_count }}</h4>
+                                    <p>Total Doctors</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-calendar-alt fa-2x mb-2"></i>
+                                    <h4>{{ appointment_count }}</h4>
+                                    <p>Total Appointments</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-calendar-day fa-2x mb-2"></i>
+                                    <h4>{{ today_appointments }}</h4>
+                                    <p>Today's Appointments</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-user-md"></i> Manage Doctors</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Add, edit, or remove doctors from the system.</p>
+                                    <a href="{{ url_for('manage_doctors') }}" class="btn btn-primary">
+                                        <i class="fas fa-cog"></i> Manage Doctors
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-calendar-alt"></i> Recent Appointments</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if recent_appointments %}
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Patient</th>
+                                                    <th>Doctor</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for appointment in recent_appointments %}
+                                                <tr>
+                                                    <td>{{ appointment.user.username }}</td>
+                                                    <td>Dr. {{ appointment.doctor.name }}</td>
+                                                    <td>{{ appointment.date.strftime('%m/%d') }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {% else %}
+                                    <p class="text-muted">No recent appointments</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
