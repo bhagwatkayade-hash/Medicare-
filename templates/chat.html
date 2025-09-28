@@ -68,13 +68,12 @@ document.getElementById('chat-form').addEventListener('submit', function(e) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
     
     // Send AJAX request
-    fetch('/chat', {
+    fetch('/api/chat', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
         },
-        body: new URLSearchParams({
-            'csrf_token': document.querySelector('input[name="csrf_token"]').value,
+        body: JSON.stringify({
             'message': message
         })
     })

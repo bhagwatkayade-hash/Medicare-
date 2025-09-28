@@ -22,12 +22,6 @@
                     <div class="row mb-4">
                         <div class="col-12">
                             <h4 class="mb-3">Welcome back, Dr. {{ current_user.name }}!</h4>
-                            {% if not current_user.is_verified %}
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle"></i> 
-                                Your account is pending verification. Some features may be limited until verification is complete.
-                            </div>
-                            {% endif %}
                         </div>
                     </div>
                     

@@ -352,10 +352,6 @@ def doctor_login():
     if form.validate_on_submit():
         doctor = Doctor.query.filter_by(email=form.email.data).first()
         if doctor and doctor.check_password(form.password.data):
-            if not doctor.is_active:
-                flash('Your account has been deactivated. Please contact administration.', 'danger')
-                return redirect(url_for('doctor_login'))
-            
             login_user(doctor, remember=form.remember.data)
             next_page = request.args.get('next')
             flash('Login successful!', 'success')
@@ -385,14 +381,15 @@ def doctor_register():
             price=form.price.data,
             availability=form.availability.data,
             description=form.description.data,
-            is_verified=False  # Admin needs to verify
+            is_verified=True,  # Auto-verify for direct registration
+            is_active=True     # Auto-activate account
         )
         doctor.set_password(form.password.data)
         
         db.session.add(doctor)
         db.session.commit()
         
-        flash('Registration successful! Your account is pending verification by administration.', 'info')
+        flash('Registration successful! You can now login with your credentials.', 'success')
         return redirect(url_for('doctor_login'))
     
     return render_template('doctor/register.html', title='Doctor Registration', form=form)
