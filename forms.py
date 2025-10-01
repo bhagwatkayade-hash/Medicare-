@@ -56,3 +56,63 @@ class DoctorForm(FlaskForm):
 
 class CancelAppointmentForm(FlaskForm):
     submit = SubmitField('Cancel Appointment')
+
+
+class DoctorLoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember = BooleanField('Remember Me')
+    submit = SubmitField('Login')
+
+
+class DoctorRegistrationForm(FlaskForm):
+    name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=100)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    specialty = StringField('Medical Specialty', validators=[DataRequired()])
+    qualification = StringField('Qualifications', validators=[DataRequired()])
+    experience = IntegerField('Years of Experience', validators=[DataRequired()])
+    license_number = StringField('Medical License Number', validators=[DataRequired()])
+    phone = StringField('Phone Number', validators=[DataRequired()])
+    address = TextAreaField('Clinic/Hospital Address', validators=[DataRequired()])
+    price = IntegerField('Consultation Fee (₹)', validators=[DataRequired()])
+    availability = StringField('Availability (e.g., Mon-Fri 9AM-5PM)', validators=[DataRequired()])
+    description = TextAreaField('Professional Summary')
+    submit = SubmitField('Register')
+    
+    def validate_email(self, email):
+        from models import Doctor
+        doctor = Doctor.query.filter_by(email=email.data).first()
+        if doctor:
+            raise ValidationError('Email is already registered. Please use a different one.')
+    
+    def validate_license_number(self, license_number):
+        from models import Doctor
+        doctor = Doctor.query.filter_by(license_number=license_number.data).first()
+        if doctor:
+            raise ValidationError('License number is already registered.')
+
+
+class DoctorProfileForm(FlaskForm):
+    name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=100)])
+    specialty = StringField('Medical Specialty', validators=[DataRequired()])
+    qualification = StringField('Qualifications', validators=[DataRequired()])
+    experience = IntegerField('Years of Experience', validators=[DataRequired()])
+    phone = StringField('Phone Number', validators=[DataRequired()])
+    address = TextAreaField('Clinic/Hospital Address', validators=[DataRequired()])
+    price = IntegerField('Consultation Fee (₹)', validators=[DataRequired()])
+    availability = StringField('Availability (e.g., Mon-Fri 9AM-5PM)', validators=[DataRequired()])
+    description = TextAreaField('Professional Summary')
+    submit = SubmitField('Update Profile')
+
+
+class AppointmentStatusForm(FlaskForm):
+    status = SelectField('Status', choices=[
+        ('Pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
+        ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled')
+    ], validators=[DataRequired()])
+    notes = TextAreaField('Doctor\'s Notes')
+    submit = SubmitField('Update Status')

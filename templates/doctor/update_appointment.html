@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h3><i class="fas fa-edit"></i> Update Appointment Status</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5>Appointment Information</h5>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <p><strong>Patient:</strong> {{ appointment.patient.username }}</p>
+                                    <p><strong>Date:</strong> {{ appointment.date.strftime('%B %d, %Y') }}</p>
+                                    <p><strong>Time:</strong> {{ appointment.time }}</p>
+                                    <p><strong>Current Status:</strong> 
+                                        <span class="badge bg-{{ 'warning' if appointment.status == 'Pending' else 'success' if appointment.status == 'Confirmed' else 'info' if appointment.status == 'Completed' else 'secondary' }}">
+                                            {{ appointment.status }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.status.label(class="form-label") }}
+                            {{ form.status(class="form-control") }}
+                            {% if form.status.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.status.errors %}
+                                        <small>{{ error }}</small><br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.notes.label(class="form-label") }}
+                            {{ form.notes(class="form-control", rows="4", placeholder="Add any notes about this appointment...") }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.notes.errors %}
+                                        <small>{{ error }}</small><br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex">
+                            {{ form.submit(class="btn btn-warning") }}
+                            <a href="{{ url_for('doctor_appointment_detail', appointment_id=appointment.id) }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
